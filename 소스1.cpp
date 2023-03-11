@@ -1,7 +1,7 @@
 #include <iostream>
 #include <windows.h>
 #include <string.h>
-
+#include <conio.h>
 #define LEFT 75
 #define RIGHT 77
 #define UP 72
@@ -12,6 +12,7 @@ using namespace std;
 class main_ {
 private:
 	int s_len = 4;
+	int Key = 0;
 	char size[100][100];
 	
 public:
@@ -26,12 +27,27 @@ int main(void) { //메인화면
 	main_ snake;
 	system("color 7");
 	snake.draw_map();
-
+	snake.snake_move();
 	
 	return 0;
 }
 void main_::snake_move() { // 움직임과 박았을때 실행
-	
+	Key = _getch();
+	switch (Key)
+	{
+	case UP:
+		break;
+	case LEFT:
+		break;
+	case RIGHT:
+		break;
+	case DOWN:
+		break;
+	case PAUSE: //P
+		break;
+	case ESC:
+		break;
+	}
 };
 void main_::apple_random() { //사과 랜덤 으로 생성 및 먹을떄 함수
 	
@@ -63,6 +79,4 @@ void main_::draw_map() {
 		}
 		cout << endl;
 	}
-
-	
 };
