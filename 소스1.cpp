@@ -319,7 +319,7 @@ int head_y = 3;//머리y 좌표
 int snake_x[SNAKE_MAX_LENGTH]; //스네이크 총 x 좌표 
 int snake_y[SNAKE_MAX_LENGTH];//스네이크 총 y좌표
 int snake_len = 3; //스네이크 초반 길이
-int key=0; //키 입력 값
+int key = 0; //키 입력 값
 
 void init() {
 	system("cls");
@@ -330,12 +330,12 @@ void init() {
 	snake_y[0] = 3;
 	snake_y[2] = 3;
 	snake_y[1] = 3;
-	
+
 
 	//뱀만들기 반복문
 	for (int i = 0; i < snake_len; i++)
 	{
-		Map[snake_y[i]][snake_x[i]] = '1'; 
+		Map[snake_y[i]][snake_x[i]] = '1';
 	}
 
 
@@ -344,8 +344,8 @@ void init() {
 	{
 		Map[0][i] = '0';
 		Map[i][0] = '0';
-		Map[MAP_BORDER_SIZE-1][i] = '0';
-		Map[i][MAP_BORDER_SIZE-1] = '0';
+		Map[MAP_BORDER_SIZE - 1][i] = '0';
+		Map[i][MAP_BORDER_SIZE - 1] = '0';
 	}
 
 }
@@ -358,51 +358,53 @@ void poll_input() {
 }
 
 //업데이트
-void update(int Key) {
+void update() {
 	//뱀 이동 관련 
-	switch (Key)
+
+	switch (key)
 	{
 	case UP:
-		
-		while (out_true(Key,UP))
+		for (int i = snake_len - 1; i > 0; i--)
 		{
-			for (int i = snake_len+1; i > 0; i--)
-			{
-				snake_x[i] = snake_x[i + 1]; // 이거 수정해야해 두번쨰 돌때 앞에 하나만 바뀜 
-				snake_y[i] = snake_y[i + 1];
-			}
-			snake_y[0]  ++;
+			snake_x[i] = snake_x[i - 1];
+			snake_y[i] = snake_y[i - 1];
 		}
+		--head_y;
+		snake_x[0] = head_x;
+		snake_y[0] = head_y;
+		break;
 	case LEFT:
-		while (out_true(Key, LEFT))
+		for (int i = snake_len + 1; i > 0; i--)
 		{
-			for (int i = snake_len + 1; i > 0; i--)
-			{
-				snake_x[i] = snake_x[i + 1];
-				snake_y[i] = snake_y[i + 1];
-			}
-			snake_x[0]  --;
+			snake_x[i] = snake_x[i - 1];
+			snake_y[i] = snake_y[i - 1];
 		}
+		--head_x;
+		snake_x[0] = head_x;
+		snake_y[0] = head_y;
+		break;
 	case RIGHT:
-		while (out_true(Key, RIGHT))
+		
+		for (int i = snake_len + 1; i > 0; i--)
 		{
-			for (int i = snake_len + 1; i > 0; i--)
-			{
-				snake_x[i] = snake_x[i + 1];
-				snake_y[i] = snake_y[i + 1];
-			}
-			snake_x[0]  ++;
+			snake_x[i] = snake_x[i - 1];
+			snake_y[i] = snake_y[i - 1];
 		}
+		++head_x;
+		snake_x[0] = head_x;
+		snake_y[0] = head_y;
+		
+	break;
 	case DOWN:
-		while (out_true(Key, DOWN))
+		for (int i = snake_len + 1; i > 0; i--)
 		{
-			for (int i = snake_len + 1; i > 0; i--)
-			{
-				snake_x[i] = snake_x[i + 1];
-				snake_y[i] = snake_y[i + 1];
-			}
-			snake_y[0]  --;
+			snake_x[i] = snake_x[i - 1];
+			snake_y[i] = snake_y[i - 1];
 		}
+		++head_y;
+		snake_x[0] = head_x;
+		snake_y[0] = head_y;
+		break;
 	case PAUSE: //P
 		break;
 	case ESC: // 종료
@@ -410,23 +412,44 @@ void update(int Key) {
 	}
 }
 
+
 //렌더링
 void draw() {
+	system("cls");
+	//Map[MAP_BORDER_SIZE][MAP_BORDER_SIZE] = { 0, };
 	for (int i = 0; i < MAP_BORDER_SIZE; i++)
 	{
-		for (int k = 0; k < MAP_BORDER_SIZE; k++)
+		for (int k = 0; k < MAP_BORDER_SIZE; k++) {
+			Map[i][k] = ' ';
+		}
+	}
+	for (int i = 0; i < MAP_BORDER_SIZE; i++)
+	{
+		Map[0][i] = '0';
+		Map[i][0] = '0';
+		Map[MAP_BORDER_SIZE - 1][i] = '0';
+		Map[i][MAP_BORDER_SIZE - 1] = '0';
+	}
+	for (int i = 0; i < snake_len; i++)
+	{
+		Map[snake_y[i]][snake_x[i]] = '1';
+	}
+	for (int i = 0; i < MAP_BORDER_SIZE; i++)
+	{
+		for (int k = 0; k < MAP_BORDER_SIZE; k++) {
 			cout << Map[i][k];
+		}
 		cout << endl;
 	}
 }
 
 //키 값 참 거짓 확인
-bool out_true(int Key,int integer_) {
+bool out_true(int Key, int integer_) {
 	if (Key != integer_)
 	{
 		return false;
 	}
-	else if(Key == integer_) {
+	else if (Key == integer_) {
 		return true;
 	}
 	else
@@ -438,9 +461,10 @@ int main(void) {
 	init(); //뱀의 꼬리 머리 맵 초기화 
 
 	while (true) {
-		poll_input(); // 방향키 입력
-		update(key);
 		draw(); //렌더링 
+		poll_input(); // 방향키 입력
+		update();
+		Sleep(200);
 	}
 
 	//shutdown();
